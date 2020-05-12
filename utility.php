@@ -1,17 +1,4 @@
 <?php
-
-function establishMySQLConnection(){
-  require_once 'login.php';
-  $conn = new mysqli($hn, $un, $pw, $db);
-  if ($conn->connect_error) die(sqlError());
-  return $conn;
-}
-
-
-function closeMySQLConnection($conn){
-   $conn->close();
-}
-
 /**
  * Display error message when mysql throw an error
  */
@@ -23,11 +10,60 @@ function sqlError()
 _END;
 }
 
-function registerationFailure(){
-  http_response_code(400);
-  echo json_encode(array("message" => "Fail to register, try a combination of username and password"));
+function register($conn, $un, $pw){
+  $salt = generateRandomSalt();
+  $hashedPW = hashPassword($pw, $salt);
+  $stmt = $conn->prepare('INSERT INTO user VALUES (NULL, ?, ? , ?)');
+  $stmt->bind_param('sss', $un, $hashedPW, $salt);
+  if(!$stmt->execute()){
+    sendAlert("Fail to create new account, try with another combination");
+  }
+  else{
+    sendAlert("Successfully create your account");
+  }
+  $stmt->close();
+  $conn->close();
 }
 
+function authentication($conn, $un, $pw){
+    $stmt = $conn->prepare('SELECT * FROM user WHERE username = ?');
+    $stmt->bind_param('s', $un);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    // SQL Connection Error
+    if (!$result) die(sqlError());
+    else if ($result->num_rows) {
+        $row = $result->fetch_array(MYSQLI_ASSOC);
+        $salt = $row['salt'];
+        $token = hash('ripemd128', $salt . $pw);
+        // Valid Credential
+        if ($token === $row['password']) {
+            session_start();
+            $_SESSION['username'] = $un;
+            $stmt->close();
+            $conn->close();
+            die (redirect("main.php"));
+        }
+        // Wrong Password
+        else {
+            sendAlert("Invalid combination of username and password");
+        }
+    }
+    $stmt->close();
+    $conn->close();
+    sendAlert("Invalid combination of username and password");
+}
+
+function sendAlert($message){
+  echo '<script language="javascript">';
+  echo "alert('{$message}')";
+  echo '</script>';
+}
+
+function redirect($url){
+  header("Location: {$url}");
+  die();
+}
 /**
  * Sanitize html input
  */

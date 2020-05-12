@@ -9,7 +9,9 @@ if ($conn->connect_error) die(sqlError());
 
 if (isset($_POST["username"]) && isset($_POST["password"])) {
   if(!empty($_POST["username"]) && !empty($_POST["password"])){
-    echo "I am here";
+    $un = sanitizeMySQL($conn, $_POST["username"]);
+    $pw = sanitizeMySQL($conn, $_POST["password"]);
+    authentication($conn,$un, $pw);
   }
 }
 
