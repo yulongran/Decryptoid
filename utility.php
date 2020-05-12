@@ -10,11 +10,11 @@ function sqlError()
 _END;
 }
 
-function register($conn, $un, $pw){
+function register($conn, $un, $pw, $em){
   $salt = generateRandomSalt();
   $hashedPW = hashPassword($pw, $salt);
-  $stmt = $conn->prepare('INSERT INTO user VALUES (NULL, ?, ? , ?)');
-  $stmt->bind_param('sss', $un, $hashedPW, $salt);
+  $stmt = $conn->prepare('INSERT INTO user VALUES (NULL, ?, ?, ? , ?)');
+  $stmt->bind_param('ssss', $un, $em, $hashedPW, $salt);
   if(!$stmt->execute()){
     sendAlert("Fail to create new account, try with another combination");
   }
@@ -58,6 +58,20 @@ function sendAlert($message){
   echo '<script language="javascript">';
   echo "alert('{$message}')";
   echo '</script>';
+}
+
+function validUsername($un){
+  if (!preg_match("/[^0-9a-zA-Z_-]+/", $un)){
+    return true;
+  }
+  return false;
+}
+
+function validEmail($em){
+  if(preg_match("/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/", $em)){
+    return true;
+  }
+  return false;
 }
 
 function redirect($url){

@@ -7,11 +7,17 @@ $conn = new mysqli($hn, $un, $pw, $db);
 if ($conn->connect_error) die(sqlError());
 
 
-if (isset($_POST["username"]) && isset($_POST["password"])) {
-  if(!empty($_POST["username"]) && !empty($_POST["password"])){
+if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"])) {
+  if(!empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["email"])){
     $un = sanitizeMySQL($conn, $_POST["username"]);
     $pw = sanitizeMySQL($conn, $_POST["password"]);
-    register($conn,$un, $pw);
+    $em = sanitizeMySQL($conn, $_POST["email"]);
+    if (validUsername($un) && validEmail($em)){
+      register($conn,$un, $pw, $em);
+    }
+    else{
+      sendAlert("Invalid username or email");
+    }
   }
 }
 echo
@@ -31,6 +37,10 @@ echo
               <div class="input-wrapper">
                 <label>Username</label>
                 <input type="text" name="username" />
+              </div>
+              <div class="input-wrapper">
+                <label>Email</label>
+                <input type="email" name="email" />
               </div>
               <div class="input-wrapper">
                 <label>Password</label>
