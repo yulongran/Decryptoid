@@ -2,8 +2,15 @@
 
 require_once 'utility.php';
 
+$translate = "";
+
 session_start();
 if(isset($_SESSION['username'])){
+  if (isset($_POST["input"]) && isset($_POST["key"])) {
+    if(!empty($_POST["input"]) && !empty($_POST["key"])){
+      $translate = "asdaskjdasjdjahshdashdjhasjdas";
+    }
+  }
   echo
       <<<_END
       <!DOCTYPE html>
@@ -36,29 +43,43 @@ if(isset($_SESSION['username'])){
                 </ul>
               </div>
             </div>
-            <div class="card-container">
-              <h1>Cipher Text Tool</h1>
-              <textarea cols="30" rows="5" placeholder="Enter your text"></textarea>
-              <input
-                type="text"
-                name="key"
-                placeholder="Enter your encryption/decryption key"
-              />
-              <div class="encrypt-decrypt-seletion">
-                <label>Choose to decrypt or encrypt your text:</label>
-                <select>
-                  <option value="encrypt">Decrypt</option>
-                  <option value="decrypt">Encrypt</option>
-                </select>
+            <form
+              class="register-form"
+              method="post"
+              action="main.php"
+              enctype="multipart/form-data"
+            >
+              <div class="card-container">
+                <h1>Cipher Text Tool</h1>
+                <textarea
+                  cols="30"
+                  rows="5"
+                  placeholder="Enter your text"
+                  name="input"
+                ></textarea>
+                <input
+                  type="text"
+                  name="key"
+                  placeholder="Enter your encryption/decryption key"
+                />
+                <div class="encrypt-decrypt-seletion">
+                  <label>Choose to decrypt or encrypt your text:</label>
+                  <select>
+                    <option value="encrypt">Decrypt</option>
+                    <option value="decrypt">Encrypt</option>
+                  </select>
+                </div>
+                <div class="result-text">
+                  <h3>Transformed text</h3>
+                  <p>{$translate}</p>
+                </div>
+                <button type="submit" class="login-btn">CALCULATE</button>
               </div>
-              <button type="submit" class="login-btn">CALCULATE</button>
-            </div>
+            </form>
           </div>
         </body>
       </html>
-
   _END;
-
 }
 else{
   redirect("authentication.php");

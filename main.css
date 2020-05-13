@@ -62,7 +62,7 @@
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   border-radius: 20px;
   width: 80vw;
-  height: 70vh;
+  min-height: 70vh;
   margin-top: 5vh;
   margin-bottom: 5vh;
   padding: 2vw;
@@ -70,7 +70,7 @@
 }
 
 .card-container h1 {
-  flex: 0.8;
+  flex: 0.5;
   font-family: Poppins-Bold;
   font-size: 30px;
   color: #333333;
@@ -79,7 +79,7 @@
 }
 
 .card-container textarea {
-  flex: 2.2;
+  flex: 1.5;
   width: 70vw;
   height: 15vh;
   border: 2px solid #cccccc;
@@ -93,7 +93,7 @@
 }
 
 .card-container input {
-  flex: 0.5;
+  flex: 0.4;
   padding-left: 2px;
   padding-right: 2px;
   display: block;
@@ -137,6 +137,16 @@
   align-self: center;
 }
 
-.placeholder {
-  flex: 2;
+.result-text {
+  flex: 1;
+  align-self: flex-start;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.result-text p {
+  font-family: Poppins;
+  color: #333333;
+  line-height: 1.2;
+  word-wrap: break-word;
 }
