@@ -1,14 +1,28 @@
 <?php
 
+require_once 'login.php';
 require_once 'utility.php';
+require_once 'cipher.php';
 
 $translate = "";
+
+$conn = new mysqli($hn, $un, $pw, $db);
+if ($conn->connect_error) die(sqlError());
+
 
 session_start();
 if(isset($_SESSION['username'])){
   if (isset($_POST["input"]) && isset($_POST["key"])) {
     if(!empty($_POST["input"]) && !empty($_POST["key"])){
-      $translate = "asdaskjdasjdjahshdashdjhasjdas";
+      $input = sanitizeMySQL($conn, $_POST["input"]);
+      $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
+      if($selection ===  'decrypt'){
+          $translate = simpleSubstitutionEncryption($input);
+      }
+      else{
+          $translate = simpleSubstitutionDecryption($input);
+      }
+      $conn->close();
     }
   }
   echo
@@ -64,9 +78,9 @@ if(isset($_SESSION['username'])){
                 />
                 <div class="encrypt-decrypt-seletion">
                   <label>Choose to decrypt or encrypt your text:</label>
-                  <select>
-                    <option value="encrypt">Decrypt</option>
+                  <select name="function-selection">
                     <option value="decrypt">Encrypt</option>
+                    <option value="encrypt">Decrypt</option>
                   </select>
                 </div>
                 <div class="result-text">
