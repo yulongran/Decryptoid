@@ -5,7 +5,7 @@ require_once 'utility.php';
 require_once 'cipher.php';
 
 $translate = "";
-
+$loggedin = "inline";
 $conn = new mysqli($hn, $un, $pw, $db);
 if ($conn->connect_error) {
     die(sqlError());
@@ -14,6 +14,7 @@ if ($conn->connect_error) {
 
 session_start();
 if (isset($_SESSION['username'])) {
+    $loggedin = "none";
     if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
         $input = "";
         if (!empty($_POST["input"])) {
@@ -52,13 +53,13 @@ if (isset($_SESSION['username'])) {
               <div class="navs">
                 <ul class="nav justify-content-center">
                   <li class="nav-item">
-                    <a class="nav-link" href="/main.php">Decrypt</a>
+                    <a class="nav-link" href="/main.php">Cipher Tool</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/history.php">History</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/project">Log Out</a>
+                  <li style="display:{$loggedin}" class="nav-item">
+                    <a class="nav-link" href="/authentication.php">Log in</a>
                   </li>
                 </ul>
               </div>
@@ -78,7 +79,7 @@ if (isset($_SESSION['username'])) {
                   name="input"
                 ></textarea>
                 <div class="encrypt-decrypt-seletion">
-                  <label>Upload a text file:</label>
+                  <label>Enter your text or upload a text file:</label>
                   <input type="file" name="fileInput" id="fileToUpload">
                 </div>
                 <div class="encrypt-decrypt-seletion">
@@ -107,6 +108,4 @@ if (isset($_SESSION['username'])) {
         </body>
       </html>
   _END;
-} else {
-    redirect("authentication.php");
 }

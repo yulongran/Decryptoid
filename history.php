@@ -42,13 +42,13 @@ if (isset($_SESSION['username'])) {
               <div class="navs">
                 <ul class="nav justify-content-center">
                   <li class="nav-item">
-                    <a class="nav-link" href="/main.php">Decrypt</a>
+                    <a class="nav-link" href="/main.php">Cipher Tool</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/history.php">History</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/project">Log Out</a>
+                  <li style="display:none" class="nav-item">
+                    <a class="nav-link" href="/project">Log in</a>
                   </li>
                 </ul>
               </div>
