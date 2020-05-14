@@ -38,7 +38,7 @@ if(isset($_SESSION['username'])){
           <div class="main-container">
             <div class="nav-container">
               <div class="name">
-                <a class="nav-link" href="/">Decryptoid</a>
+                <a class="nav-link" href="/main.php">Decryptoid</a>
               </div>
               <div class="navs">
                 <ul class="nav justify-content-center">
