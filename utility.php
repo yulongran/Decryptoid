@@ -10,29 +10,31 @@ function sqlError()
 _END;
 }
 
-function register($conn, $un, $pw, $em){
-  $salt = generateRandomSalt();
-  $hashedPW = hashPassword($pw, $salt);
-  $stmt = $conn->prepare('INSERT INTO user VALUES (NULL, ?, ?, ? , ?)');
-  $stmt->bind_param('ssss', $un, $em, $hashedPW, $salt);
-  if(!$stmt->execute()){
-    sendAlert("Fail to create new account, try with another combination");
-  }
-  else{
-    sendAlert("Successfully create your account");
-  }
-  $stmt->close();
-  $conn->close();
+function register($conn, $un, $pw, $em)
+{
+    $salt = generateRandomSalt();
+    $hashedPW = hashPassword($pw, $salt);
+    $stmt = $conn->prepare('INSERT INTO user VALUES (NULL, ?, ?, ? , ?)');
+    $stmt->bind_param('ssss', $un, $em, $hashedPW, $salt);
+    if (!$stmt->execute()) {
+        sendAlert("Fail to create new account, try with another combination");
+    } else {
+        sendAlert("Successfully create your account");
+    }
+    $stmt->close();
+    $conn->close();
 }
 
-function authentication($conn, $un, $pw){
+function authentication($conn, $un, $pw)
+{
     $stmt = $conn->prepare('SELECT * FROM user WHERE username = ?');
     $stmt->bind_param('s', $un);
     $stmt->execute();
     $result = $stmt->get_result();
     // SQL Connection Error
-    if (!$result) die(sqlError());
-    else if ($result->num_rows) {
+    if (!$result) {
+        die(sqlError());
+    } elseif ($result->num_rows) {
         $row = $result->fetch_array(MYSQLI_ASSOC);
         $salt = $row['salt'];
         $token = hash('ripemd128', $salt . $pw);
@@ -42,7 +44,7 @@ function authentication($conn, $un, $pw){
             $_SESSION['username'] = $un;
             $stmt->close();
             $conn->close();
-            die (redirect("main.php"));
+            die(redirect("main.php"));
         }
         // Wrong Password
         else {
@@ -54,29 +56,41 @@ function authentication($conn, $un, $pw){
     sendAlert("Invalid combination of username and password");
 }
 
-function sendAlert($message){
-  echo '<script language="javascript">';
-  echo "alert('{$message}')";
-  echo '</script>';
+function storeUserRecord($conn, $username, $input, $cipher)
+{
+    $stmt = $conn->prepare('INSERT INTO history VALUES (NULL, ?, ?, ? , NOW())');
+    $stmt->bind_param('sss', $username, $input, $cipher);
+    $stmt->execute();
+    $stmt->close();
 }
 
-function validUsername($un){
-  if (!preg_match("/[^0-9a-zA-Z_-]+/", $un)){
-    return true;
-  }
-  return false;
+function sendAlert($message)
+{
+    echo '<script language="javascript">';
+    echo "alert('{$message}')";
+    echo '</script>';
 }
 
-function validEmail($em){
-  if(preg_match("/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/", $em)){
-    return true;
-  }
-  return false;
+function validUsername($un)
+{
+    if (!preg_match("/[^0-9a-zA-Z_-]+/", $un)) {
+        return true;
+    }
+    return false;
 }
 
-function redirect($url){
-  header("Location: {$url}");
-  die();
+function validEmail($em)
+{
+    if (preg_match("/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/", $em)) {
+        return true;
+    }
+    return false;
+}
+
+function redirect($url)
+{
+    header("Location: {$url}");
+    die();
 }
 /**
  * Sanitize html input

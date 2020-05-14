@@ -7,25 +7,30 @@ require_once 'cipher.php';
 $translate = "";
 
 $conn = new mysqli($hn, $un, $pw, $db);
-if ($conn->connect_error) die(sqlError());
+if ($conn->connect_error) {
+    die(sqlError());
+}
 
 
 session_start();
-if(isset($_SESSION['username'])){
-  if (isset($_POST["input"]) && isset($_POST["key"])) {
-    if(!empty($_POST["input"]) && !empty($_POST["key"])){
-      $input = sanitizeMySQL($conn, $_POST["input"]);
-      $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
-      if($selection ===  'decrypt'){
-          $translate = simpleSubstitutionEncryption($input);
-      }
-      else{
-          $translate = simpleSubstitutionDecryption($input);
-      }
-      $conn->close();
+if (isset($_SESSION['username'])) {
+    if (isset($_POST["input"])) {
+        if (!empty($_POST["input"])) {
+            $input = sanitizeMySQL($conn, $_POST["input"]);
+            $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
+            $cipher = sanitizeMySQL($conn, $_POST["cipher-selection"]);
+            if ($cipher == "simple-substitution") {
+                $translate =  $selection === 'encrypt' ? simpleSubstitutionEncryption($input) : simpleSubstitutionDecryption($input);
+            } elseif ($cipher = "double-transposition") {
+                $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
+            } else {
+                $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
+            }
+            storeUserRecord($conn, $_SESSION['username'], $input, $cipher);
+            $conn->close();
+        }
     }
-  }
-  echo
+    echo
       <<<_END
       <!DOCTYPE html>
       <html lang="en">
@@ -43,13 +48,10 @@ if(isset($_SESSION['username'])){
               <div class="navs">
                 <ul class="nav justify-content-center">
                   <li class="nav-item">
-                    <a class="nav-link" href="#app-about">Decrypt</a>
+                    <a class="nav-link" href="/main.php">Decrypt</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/about">History</a>
-                  </li>
-                  <li class="Înav-item">
-                    <a class="nav-link" href="/experience">About</a>
+                    <a class="nav-link" href="/history.php">History</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="/project">Log Out</a>
@@ -71,16 +73,19 @@ if(isset($_SESSION['username'])){
                   placeholder="Enter your text"
                   name="input"
                 ></textarea>
-                <input
-                  type="text"
-                  name="key"
-                  placeholder="Enter your encryption/decryption key"
-                />
                 <div class="encrypt-decrypt-seletion">
                   <label>Choose to decrypt or encrypt your text:</label>
                   <select name="function-selection">
-                    <option value="decrypt">Encrypt</option>
-                    <option value="encrypt">Decrypt</option>
+                    <option value="encrypt">Encrypt</option>
+                    <option value="decrypt">Decrypt</option>
+                  </select>
+                </div>
+                <div class="encrypt-decrypt-seletion">
+                  <label>Choose cipher:</label>
+                  <select name="cipher-selection">
+                    <option value="simple-substitution">Simple Substitution</option>
+                    <option value="double-transposition">Double Transposition</option>
+                    <option value="rc4">RC4</option>
                   </select>
                 </div>
                 <div class="result-text">
@@ -94,7 +99,6 @@ if(isset($_SESSION['username'])){
         </body>
       </html>
   _END;
-}
-else{
-  redirect("authentication.php");
+} else {
+    redirect("authentication.php");
 }

@@ -172,7 +172,3 @@ function array_insert($array, $value, $pos)
   array($value),
   array_slice($array, $pos, count($array), true));
 }
-
-echo doubleTranspositionEncryption("Hello My Name is Yulong");
-echo "</br>";
-echo doubleTranspositionDecryption("s uayHiNleonml l MoeY g");
