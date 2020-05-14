@@ -68,9 +68,8 @@
   padding: 2vw;
   align-items: center;
 }
-
 .card-container h1 {
-  flex: 0.5;
+  flex: 0.15;
   font-family: Poppins-Bold;
   font-size: 30px;
   color: #333333;
@@ -78,74 +77,16 @@
   text-align: center;
 }
 
-.card-container textarea {
-  flex: 1.5;
-  width: 70vw;
-  height: 15vh;
-  border: 2px solid #cccccc;
-  padding: 1vw;
-  font-size: 12px;
-  border-radius: 10px;
-}
-
-.card-container textarea:focus {
-  outline: none;
-}
-
-.card-container input {
-  flex: 0.4;
-  padding-left: 2px;
-  padding-right: 2px;
-  display: block;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  width: 70vw;
-  align-self: center;
-  font-size: 12px;
-}
-
-.card-container input:focus {
-  outline: none;
-}
-
-.encrypt-decrypt-seletion {
-  display: flex;
-  width: inherit;
-  align-items: center;
-  flex: 0.5;
-  align-self: flex-start;
-  padding-left: 5%;
-}
-
-.card-container label {
-  font-family: Poppins;
-  color: #333333;
-  line-height: 1.2;
-}
-.card-container button {
-  flex: 0.3;
-  background-color: #d63447;
-  border: none;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  width: 15%;
-  border-radius: 15px;
-  align-self: center;
-}
-
-.result-text {
+table {
   flex: 1;
-  align-self: flex-start;
-  padding-left: 5%;
-  padding-right: 5%;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
 }
 
-.result-text p {
-  color: #333333;
-  line-height: 1.2;
-  word-wrap: break-word;
+td,
+th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
 }

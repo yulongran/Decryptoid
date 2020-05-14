@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Decryption</title>
+    <link rel="stylesheet" href="./history.css" />
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="nav-container">
+        <div class="name">
+          <a class="nav-link" href="/main.php">Decryptoid</a>
+        </div>
+        <div class="navs">
+          <ul class="nav justify-content-center">
+            <li class="nav-item">
+              <a class="nav-link" href="/main.php">Decrypt</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/history.php">History</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/project">Log Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="card-container">
+        <table>
+          <tr>
+            <th>USERNAME</th>
+            <th>INPUT</th>
+            <th>CIPHER</th>
+            <th>TIMESTAMP</th>
+          </tr>
+          <?php
+          while($row = $result->fetch_array()) { echo "
+          <tr>
+            "; echo "
+            <td>".$row['username'] . "</td>
+            "; echo "
+            <td>".$row['username'] . "</td>
+            "; echo "
+            <td>".$row['username'] . "</td>
+            "; echo "
+          </tr>
+          "; } ?>
+          <tr>
+            <td>Centro comercial Moctezuma</td>
+            <td>Francisco Chang</td>
+            <td>Mexico</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

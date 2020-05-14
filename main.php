@@ -14,21 +14,25 @@ if ($conn->connect_error) {
 
 session_start();
 if (isset($_SESSION['username'])) {
-    if (isset($_POST["input"])) {
+    if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
+        $input = "";
         if (!empty($_POST["input"])) {
             $input = sanitizeMySQL($conn, $_POST["input"]);
-            $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
-            $cipher = sanitizeMySQL($conn, $_POST["cipher-selection"]);
-            if ($cipher == "simple-substitution") {
-                $translate =  $selection === 'encrypt' ? simpleSubstitutionEncryption($input) : simpleSubstitutionDecryption($input);
-            } elseif ($cipher = "double-transposition") {
-                $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
-            } else {
-                $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
-            }
-            storeUserRecord($conn, $_SESSION['username'], $input, $cipher);
-            $conn->close();
+        } else {
+            $input = file_get_contents(sanitizeMySQL($conn, $_FILES["fileInput"]["tmp_name"]));
+
         }
+        $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
+        $cipher = sanitizeMySQL($conn, $_POST["cipher-selection"]);
+        if ($cipher == "simple-substitution") {
+            $translate =  $selection === 'encrypt' ? simpleSubstitutionEncryption($input) : simpleSubstitutionDecryption($input);
+        } elseif ($cipher = "double-transposition") {
+            $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
+        } else {
+            $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
+        }
+        storeUserRecord($conn, $_SESSION['username'], $input, $cipher);
+        $conn->close();
     }
     echo
       <<<_END
@@ -73,6 +77,10 @@ if (isset($_SESSION['username'])) {
                   placeholder="Enter your text"
                   name="input"
                 ></textarea>
+                <div class="encrypt-decrypt-seletion">
+                  <label>Upload a text file:</label>
+                  <input type="file" name="fileInput" id="fileToUpload">
+                </div>
                 <div class="encrypt-decrypt-seletion">
                   <label>Choose to decrypt or encrypt your text:</label>
                   <select name="function-selection">
