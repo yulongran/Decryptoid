@@ -1,6 +1,7 @@
 <?php
 
-function simpleSubstitutionEncryption($text){
+function simpleSubstitutionEncryption($input)
+{
     $letter = array('a'=>'q', 'b'=>'w', 'c'=>'e', 'd'=>'r', 'e'=>'t',
           'f'=>'y', 'g'=>'u', 'h'=>'i', 'i'=>'o',
           'j'=>'p', 'k'=>'a', 'l'=>'s', 'm'=>'d',
@@ -14,17 +15,18 @@ function simpleSubstitutionEncryption($text){
                 'R'=>'K', 'S'=>'L', 'T'=>'Z', 'U'=>'X',
                 'V'=>'C','W'=>'V', 'X'=>'B', 'Y'=>'N',
                 'Z'=>'M');
-    $carray = str_split($text);
-    for ($i = 0; $i < count($carray); $i++){
-      if (preg_match("/[a-zA-Z]+/", $carray[$i])) {
-        $carray[$i] = $letter[$carray[$i]];
-      }
+    $carray = str_split($input);
+    for ($i = 0; $i < count($carray); $i++) {
+        if (preg_match("/[a-zA-Z]+/", $carray[$i])) {
+            $carray[$i] = $letter[$carray[$i]];
+        }
     }
     return implode($carray);
 }
 
-function simpleSubstitutionDecryption($text){
-  $letter = array('q'=>'a', 'w'=>'b', 'e'=>'c', 'r'=>'d', 't'=>'e',
+function simpleSubstitutionDecryption($input)
+{
+    $letter = array('q'=>'a', 'w'=>'b', 'e'=>'c', 'r'=>'d', 't'=>'e',
         'y'=>'f', 'u'=>'g', 'i'=>'h', 'o'=>'i',
         'p'=>'j', 'a'=>'k', 's'=>'l', 'd'=>'m',
         'f'=>'n', 'g'=>'o', 'h'=>'p', 'j'=>'q',
@@ -37,13 +39,13 @@ function simpleSubstitutionDecryption($text){
               'K'=>'R', 'L'=>'S', 'Z'=>'T', 'X'=>'U',
               'C'=>'V','V'=>'W', 'B'=>'X', 'N'=>'Y',
               'M'=>'Z');
-  $carray = str_split($text);
-  for ($i = 0; $i < count($carray); $i++){
-    if (preg_match("/[a-zA-Z]+/", $carray[$i])) {
-      $carray[$i] = $letter[$carray[$i]];
+    $carray = str_split($input);
+    for ($i = 0; $i < count($carray); $i++) {
+        if (preg_match("/[a-zA-Z]+/", $carray[$i])) {
+            $carray[$i] = $letter[$carray[$i]];
+        }
     }
-  }
-  return implode($carray);
+    return implode($carray);
 }
 
 
@@ -51,18 +53,19 @@ function simpleSubstitutionDecryption($text){
  * Encrypt plaintext using double transposition cipher
  * @param text the input string
 **/
-function doubleTranspositionEncryption($text){
+function doubleTranspositionEncryption($input)
+{
     $KEY =  "POTATO";
     $KEY2 = "SPARTA";
     $KEYMAP = array(0=>3, 1=>1, 2=>5, 3=>0, 4=>2, 5=>4);
     $KEYMAP2 = array(0=>2, 1=>5, 2=>1, 3=>3, 4=>0, 5=>4);
 
-    $cipherArray = constructCipherArrayEncryption($text, $KEY);
-    for($row=0; $row<count($cipherArray); $row++){
-      $output=  "";
-      for($col=0; $col< count($cipherArray[0]); $col++){
-        $output = $output.$cipherArray[$row][$col];
-      }
+    $cipherArray = constructCipherArrayEncryption($input, $KEY);
+    for ($row=0; $row<count($cipherArray); $row++) {
+        $output=  "";
+        for ($col=0; $col< count($cipherArray[0]); $col++) {
+            $output = $output.$cipherArray[$row][$col];
+        }
     }
     $firstTransposition = constructTextFromCipherArrayEncryption($cipherArray, $KEYMAP);
     $cipherArray2 = constructCipherArrayEncryption($firstTransposition, $KEY2);
@@ -74,13 +77,14 @@ function doubleTranspositionEncryption($text){
  * Decrypt cipher using double transposition cipher
  * @param text the cipher text
 **/
-function doubleTranspositionDecryption($text){
+function doubleTranspositionDecryption($input)
+{
     $KEY =  "POTATO";
     $KEY2 = "SPARTA";
     $KEYMAP = array(0=>3, 1=>1, 2=>5, 3=>0, 4=>2, 5=>4);
     $KEYMAP2 = array(0=>2, 1=>5, 2=>1, 3=>3, 4=>0, 5=>4);
 
-    $cipherArray = constructCipherArrayDecryption($text, $KEYMAP2);
+    $cipherArray = constructCipherArrayDecryption($input, $KEYMAP2);
     $cipherText  = constructTextFromCipherArrayDecryption($cipherArray);
     $cipherArray2 = constructCipherArrayDecryption($cipherText, $KEYMAP);
     return constructTextFromCipherArrayDecryption($cipherArray2);
@@ -91,18 +95,19 @@ function doubleTranspositionDecryption($text){
  * @param text the input string
  * @param key  cipher key
 **/
-function constructCipherArrayEncryption($text, $key){
-  $totalChar = strlen($text);
-  $keyLength = strlen($key);
-  $columnLength = $keyLength;
-  $rowLength = ceil($totalChar / $keyLength);
-  $cipherArray = array();
-  for($i=0; $i<$totalChar; $i++){
-    $currentRow = $i / $columnLength;
-    $currentCol = $i % $columnLength;
-    $cipherArray[$currentRow][$currentCol] = $text[$i];
-  }
-  return $cipherArray;
+function constructCipherArrayEncryption($input, $key)
+{
+    $totalChar = strlen($input);
+    $keyLength = strlen($key);
+    $columnLength = $keyLength;
+    $rowLength = ceil($totalChar / $keyLength);
+    $cipherArray = array();
+    for ($i=0; $i<$totalChar; $i++) {
+        $currentRow = $i / $columnLength;
+        $currentCol = $i % $columnLength;
+        $cipherArray[$currentRow][$currentCol] = $input[$i];
+    }
+    return $cipherArray;
 }
 
 /**
@@ -110,14 +115,15 @@ function constructCipherArrayEncryption($text, $key){
  * @param text the input string
  * @param keymap a map represents the order of the column
 **/
-function constructTextFromCipherArrayEncryption($cipherArray, $keymap){
-  $output = "";
-  for($i=0; $i<count($keymap); $i++){
-    for($row=0; $row< count($cipherArray); $row++){
-      $output = $output. $cipherArray[$row][$keymap[$i]];
+function constructTextFromCipherArrayEncryption($cipherArray, $keymap)
+{
+    $output = "";
+    for ($i=0; $i<count($keymap); $i++) {
+        for ($row=0; $row< count($cipherArray); $row++) {
+            $output = $output. $cipherArray[$row][$keymap[$i]];
+        }
     }
-  }
-  return $output;
+    return $output;
 }
 
 /**
@@ -125,29 +131,30 @@ function constructTextFromCipherArrayEncryption($cipherArray, $keymap){
  * @param text the input string
  * @param key  cipher key
 **/
-function constructCipherArrayDecryption($text, $keymap){
-  $totalChar = strlen($text);
-  $keyLength = count($keymap);
-  $columnLength = $keyLength;
-  $rowLength = ceil($totalChar / $keyLength);
-  $textArray = str_split($text);
-  $cipherArray = array();
-  // Shift index by adding empty string
-  for($i=0; $i<$totalChar; $i++){
-    $currentCol= $i / $rowLength;
-    $currentRow = $i % $rowLength + 1;
-    $shiftedCol = $keymap[$currentCol]+1;
-    if($shiftedCol * $currentRow >= $totalChar){
-      $textArray = array_insert($textArray, "", $i);
+function constructCipherArrayDecryption($input, $keymap)
+{
+    $totalChar = strlen($input);
+    $keyLength = count($keymap);
+    $columnLength = $keyLength;
+    $rowLength = ceil($totalChar / $keyLength);
+    $inputArray = str_split($input);
+    $cipherArray = array();
+    // Shift index by adding empty string
+    for ($i=0; $i<$totalChar; $i++) {
+        $currentCol= $i / $rowLength;
+        $currentRow = $i % $rowLength + 1;
+        $shiftedCol = $keymap[$currentCol]+1;
+        if ($shiftedCol * $currentRow >= $totalChar) {
+            $inputArray = array_insert($inputArray, "", $i);
+        }
     }
-  }
-  $totalChar = count($textArray);
-  for($i=0; $i<$totalChar; $i++){
-    $currentCol= $i / $rowLength;
-    $currentRow = $i % $rowLength;
-    $cipherArray[$currentRow][$keymap[$currentCol]] = $textArray[$i];
-  }
-  return $cipherArray;
+    $totalChar = count($inputArray);
+    for ($i=0; $i<$totalChar; $i++) {
+        $currentCol= $i / $rowLength;
+        $currentRow = $i % $rowLength;
+        $cipherArray[$currentRow][$keymap[$currentCol]] = $inputArray[$i];
+    }
+    return $cipherArray;
 }
 
 /**
@@ -155,20 +162,64 @@ function constructCipherArrayDecryption($text, $keymap){
  * @param text the input string
  * @param keymap a map represents the order of the column
 **/
-function constructTextFromCipherArrayDecryption($cipherArray){
-  $output = "";
-  for($row=0; $row<count($cipherArray); $row++){
-    for($col=0; $col<count($cipherArray[0]); $col++){
-      $output = $output.$cipherArray[$row][$col];
+function constructTextFromCipherArrayDecryption($cipherArray)
+{
+    $output = "";
+    for ($row=0; $row<count($cipherArray); $row++) {
+        for ($col=0; $col<count($cipherArray[0]); $col++) {
+            $output = $output.$cipherArray[$row][$col];
+        }
     }
-  }
-  return $output;
+    return $output;
 }
 
+/**
+ * Insert an element to the array at specific index
+ * @param array Inserted Array
+ * @param value Inserted value
+ * @param pos Inserted position by index
+**/
 function array_insert($array, $value, $pos)
 {
-  return array_merge(
-  array_slice($array, 0, $pos, true),
-  array($value),
-  array_slice($array, $pos, count($array), true));
+    return array_merge(
+        array_slice($array, 0, $pos, true),
+        array($value),
+        array_slice($array, $pos, count($array), true)
+    );
+}
+
+/**
+ * Encrypt and Decrypt plaintext using RC4
+ * The RC4 algorithm is taken from https://www.dcode.fr/rc4-cipher
+ * @param text the input string
+**/
+function rc4EncryptionDecryption($input)
+{
+    $key = "SPARTAN";
+    $t = array();
+    $keyLength = strlen($key);
+    for ($i=0; $i<256; $i++) {
+        $t[$i] = $i;
+    }
+    $j= 0;
+    for ($i=0; $i<256; $i++) {
+        $j = ($j + $t[$i] + ord($key[$i % $keyLength])) % 256;
+        $temp = $s[$i];
+        $s[$i] = $s[$j];
+        $s[$j] = $temp;
+    }
+    $a = 0;
+    $b = 0;
+    $j = strlen($input);
+    $output = "";
+    for ($i=0; $i<$j; $i++) {
+      $a = ($a+1) % 256;
+      $b = ($b + $t[$a]) % 256;
+      $temp = $t[$a];
+      $t[$a] = $t[$b];
+      $t[$b] = $temp;
+      $output .= $input[$i] ^ chr($t[($t[$a] + $t[$b]) % 256]);
+    }
+
+    return $output;
 }

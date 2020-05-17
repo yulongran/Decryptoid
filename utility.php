@@ -10,6 +10,13 @@ function sqlError()
 _END;
 }
 
+/**
+ * Register user
+ * @param $conn MySQL connection
+ * @param $un sanitized username
+ * @param $pw sanitized password
+ * @param $em sanitized email
+ */
 function register($conn, $un, $pw, $em)
 {
     $salt = generateRandomSalt();
@@ -25,6 +32,12 @@ function register($conn, $un, $pw, $em)
     $conn->close();
 }
 
+/**
+ * Authenticate user
+ * @param $conn MySQL connection
+ * @param $un sanitized username
+ * @param $pw sanitized password
+ */
 function authentication($conn, $un, $pw)
 {
     $stmt = $conn->prepare('SELECT * FROM user WHERE username = ?');
@@ -42,6 +55,7 @@ function authentication($conn, $un, $pw)
         if ($token === $row['password']) {
             session_start();
             $_SESSION['username'] = $un;
+            $_SESSION['check'] = hash('ripemd128', $_SERVER['REMOTE_ADDR'] .$_SERVER['HTTP_USER_AGENT']);
             $stmt->close();
             $conn->close();
             die(redirect("main.php"));
@@ -53,9 +67,15 @@ function authentication($conn, $un, $pw)
     }
     $stmt->close();
     $conn->close();
-    sendAlert("Invalid combination of username and password");
 }
 
+/**
+ * Store user action
+ * @param $conn MySQL connection
+ * @param $username sanitized username
+ * @param $input sanitized username input for cipher
+ * @param $cipher santized cipher used for encryption or decryption
+ */
 function storeUserRecord($conn, $username, $input, $cipher)
 {
     $stmt = $conn->prepare('INSERT INTO history VALUES (NULL, ?, ?, ? , NOW())');
@@ -64,6 +84,7 @@ function storeUserRecord($conn, $username, $input, $cipher)
     $stmt->close();
 }
 
+
 function sendAlert($message)
 {
     echo '<script language="javascript">';
@@ -71,6 +92,10 @@ function sendAlert($message)
     echo '</script>';
 }
 
+/**
+ * Validation on username
+ * @param $un sanitized username
+ */
 function validUsername($un)
 {
     if (!preg_match("/[^0-9a-zA-Z_-]+/", $un)) {
@@ -79,6 +104,10 @@ function validUsername($un)
     return false;
 }
 
+/**
+ * Validation on user email
+ * @param $em sanitized email address
+ */
 function validEmail($em)
 {
     if (preg_match("/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/", $em)) {

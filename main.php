@@ -3,6 +3,7 @@
 require_once 'login.php';
 require_once 'utility.php';
 require_once 'cipher.php';
+require_once 'session.php';
 
 $translate = "";
 $loggedin = "inline";
@@ -11,10 +12,11 @@ if ($conn->connect_error) {
     die(sqlError());
 }
 
-
 session_start();
+sessionFixation();
 if (isset($_SESSION['username'])) {
     $loggedin = "none";
+
     if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
         $input = "";
         if (!empty($_POST["input"])) {
@@ -25,14 +27,14 @@ if (isset($_SESSION['username'])) {
         }
         $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
         $cipher = sanitizeMySQL($conn, $_POST["cipher-selection"]);
-        if ($cipher == "simple-substitution") {
+        if ($cipher === "simple-substitution") {
             $translate =  $selection === 'encrypt' ? simpleSubstitutionEncryption($input) : simpleSubstitutionDecryption($input);
-        } elseif ($cipher = "double-transposition") {
+        } elseif ($cipher === "double-transposition") {
             $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
-        } else {
-            $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
+        } elseif ($cipher === "rc4") {
+            $translate =  $selection === 'encrypt' ? utf8_encode(rc4EncryptionDecryption($input)) : utf8_decode(rc4EncryptionDecryption($input));
         }
-        storeUserRecord($conn, $_SESSION['username'], $input, $cipher);
+        storeUserRecord($conn, sanitizeMySQL($conn, $_SESSION["username"]), $input, $cipher);
         $conn->close();
     }
     echo

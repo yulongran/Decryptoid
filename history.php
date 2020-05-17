@@ -2,6 +2,7 @@
 
 require_once 'login.php';
 require_once 'utility.php';
+require_once 'session.php';
 
 $conn = new mysqli($hn, $un, $pw, $db);
 if ($conn->connect_error) {
@@ -9,6 +10,10 @@ if ($conn->connect_error) {
 }
 
 session_start();
+sessionFixation();
+if ($_SESSION['check'] != hash('ripemd128', $_SERVER['REMOTE_ADDR'] .$_SERVER['HTTP_USER_AGENT'])) {
+    destroy_session_and_data();
+}
 if (isset($_SESSION['username'])) {
     $un = sanitizeMySQL($conn, $_SESSION['username']);
     $stmt = $conn->prepare('SELECT * FROM history WHERE username = ?');
@@ -16,8 +21,8 @@ if (isset($_SESSION['username'])) {
     $stmt->execute();
     $tableContent = "";
     $result = $stmt->get_result();
-    while($row = $result->fetch_array()){
-      $tableContent = $tableContent ."<tr>".
+    while ($row = $result->fetch_array()) {
+        $tableContent = $tableContent ."<tr>".
       "<td>".$row['username']."</td>".
       "<td>".$row['input']."</td>".
       "<td>".$row['cipher']."</td>".
