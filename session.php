@@ -11,19 +11,21 @@ function destroy_session_and_data()
     session_destroy();
 }
 
-
-function sessionFixation(){
-  if(!isset($_SESSION['initiated'])){
-    session_regenerate_id();
-    $_SESSION['initiated'] = 1;
-  }
-  if(!isset($_SESSION['count'])){
-    $_SESSION['count'] = 0;
-  }
-  else{
-    $_SESSION['count']++;
-  }
-  if($SESSION['count'] > 5){
-    session_regenerate_id();
-  }
+/**
+ * Prvent Session Hjacking
+**/
+function sessionFixation()
+{
+    if (!isset($_SESSION['initiated'])) {
+        session_regenerate_id();
+        $_SESSION['initiated'] = 1;
+    }
+    if (!isset($_SESSION['count'])) {
+        $_SESSION['count'] = 0;
+    } else {
+        $_SESSION['count']++;
+    }
+    if ($SESSION['count'] > 5) {
+        session_regenerate_id();
+    }
 }

@@ -25,10 +25,15 @@ if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
     if (!empty($_POST["input"])) {
         $input = sanitizeMySQL($conn, $_POST["input"]);
     } else {
-        $input = file_get_contents(sanitizeMySQL($conn, $_FILES["fileInput"]["tmp_name"]));
+        $type = htmlentities($_FILES["fileInput"]["type"]);
+        if ($type === 'text/plain') {
+            $input = file_get_contents(sanitizeMySQL($conn, $_FILES["fileInput"]["tmp_name"]));
+        } else {
+            sendAlert("Invalid file format");
+        }
     }
     $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
-    $cipher = sanitizeMySQL($conn, $_sPOST["cipher-selection"]);
+    $cipher = sanitizeMySQL($conn, $_POST["cipher-selection"]);
     if ($cipher === "simple-substitution") {
         $translate =  $selection === 'encrypt' ? simpleSubstitutionEncryption($input) : simpleSubstitutionDecryption($input);
     } elseif ($cipher === "double-transposition") {

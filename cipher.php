@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Encrypt plaintext using simle substitution cipher
+ * @param input the input string
+**/
 function simpleSubstitutionEncryption($input)
 {
     $letter = array('a'=>'q', 'b'=>'w', 'c'=>'e', 'd'=>'r', 'e'=>'t',
@@ -24,6 +28,10 @@ function simpleSubstitutionEncryption($input)
     return implode($carray);
 }
 
+/**
+ * Decrypt plaintext using simple substitution cipher
+ * @param input the input string
+**/
 function simpleSubstitutionDecryption($input)
 {
     $letter = array('q'=>'a', 'w'=>'b', 'e'=>'c', 'r'=>'d', 't'=>'e',
@@ -51,7 +59,7 @@ function simpleSubstitutionDecryption($input)
 
 /**
  * Encrypt plaintext using double transposition cipher
- * @param text the input string
+ * @param input the input string
 **/
 function doubleTranspositionEncryption($input)
 {
@@ -75,7 +83,7 @@ function doubleTranspositionEncryption($input)
 
 /**
  * Decrypt cipher using double transposition cipher
- * @param text the cipher text
+ * @param input the cipher text
 **/
 function doubleTranspositionDecryption($input)
 {
@@ -92,7 +100,7 @@ function doubleTranspositionDecryption($input)
 
 /**
  * Convert a string to a 2D array with column length same as the given key
- * @param text the input string
+ * @param input the input string
  * @param key  cipher key
 **/
 function constructCipherArrayEncryption($input, $key)
@@ -112,7 +120,7 @@ function constructCipherArrayEncryption($input, $key)
 
 /**
  * Convert 2D array to the cipher text by using transposition based on the keymap
- * @param text the input string
+ * @param input the input string
  * @param keymap a map represents the order of the column
 **/
 function constructTextFromCipherArrayEncryption($cipherArray, $keymap)
@@ -128,8 +136,8 @@ function constructTextFromCipherArrayEncryption($cipherArray, $keymap)
 
 /**
  * Convert a string to a 2D array with column length same as the given key
- * @param text the input string
- * @param key  cipher key
+ * @param input the input string
+ * @param keymap  a map represents the order of the column
 **/
 function constructCipherArrayDecryption($input, $keymap)
 {
@@ -139,13 +147,15 @@ function constructCipherArrayDecryption($input, $keymap)
     $rowLength = ceil($totalChar / $keyLength);
     $inputArray = str_split($input);
     $cipherArray = array();
-    // Shift index by adding empty string
-    for ($i=0; $i<$totalChar; $i++) {
-        $currentCol= $i / $rowLength;
-        $currentRow = $i % $rowLength + 1;
-        $shiftedCol = $keymap[$currentCol]+1;
-        if ($shiftedCol * $currentRow >= $totalChar) {
-            $inputArray = array_insert($inputArray, "", $i);
+    if ($totalChar % $keyLength != 0) {
+        // Shift index by adding empty string
+        for ($i=0; $i<$totalChar; $i++) {
+            $currentCol= $i / $rowLength;
+            $currentRow = $i % $rowLength + 1;
+            $shiftedCol = $keymap[$currentCol]+1;
+            if ($shiftedCol * $currentRow >= $totalChar) {
+                $inputArray = array_insert($inputArray, "", $i);
+            }
         }
     }
     $totalChar = count($inputArray);
@@ -159,8 +169,7 @@ function constructCipherArrayDecryption($input, $keymap)
 
 /**
  * Convert 2D array to the cipher text by using transposition based on the keymap
- * @param text the input string
- * @param keymap a map represents the order of the column
+ * @param cipherArray  an array representation of the cipher text
 **/
 function constructTextFromCipherArrayDecryption($cipherArray)
 {
@@ -191,7 +200,7 @@ function array_insert($array, $value, $pos)
 /**
  * Encrypt and Decrypt plaintext using RC4
  * The RC4 algorithm is taken from https://www.dcode.fr/rc4-cipher
- * @param text the input string
+ * @param input the input string
 **/
 function rc4EncryptionDecryption($input)
 {
@@ -213,12 +222,12 @@ function rc4EncryptionDecryption($input)
     $j = strlen($input);
     $output = "";
     for ($i=0; $i<$j; $i++) {
-      $a = ($a+1) % 256;
-      $b = ($b + $t[$a]) % 256;
-      $temp = $t[$a];
-      $t[$a] = $t[$b];
-      $t[$b] = $temp;
-      $output .= $input[$i] ^ chr($t[($t[$a] + $t[$b]) % 256]);
+        $a = ($a+1) % 256;
+        $b = ($b + $t[$a]) % 256;
+        $temp = $t[$a];
+        $t[$a] = $t[$b];
+        $t[$b] = $temp;
+        $output .= $input[$i] ^ chr($t[($t[$a] + $t[$b]) % 256]);
     }
 
     return $output;

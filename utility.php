@@ -13,12 +13,15 @@ _END;
 /**
  * Register user
  * @param $conn MySQL connection
- * @param $un sanitized username
- * @param $pw sanitized password
- * @param $em sanitized email
+ * @param $un username
+ * @param $pw password
+ * @param $em email
  */
 function register($conn, $un, $pw, $em)
 {
+    $un = sanitizeMySQL($conn, $un);
+    $pw = sanitizeMySQL($conn, $pw);
+    $em = sanitizeMySQL($conn, $em);
     $salt = generateRandomSalt();
     $hashedPW = hashPassword($pw, $salt);
     $stmt = $conn->prepare('INSERT INTO user VALUES (NULL, ?, ?, ? , ?)');
@@ -40,6 +43,8 @@ function register($conn, $un, $pw, $em)
  */
 function authentication($conn, $un, $pw)
 {
+    $un = sanitizeMySQL($conn, $un);
+    $pw = sanitizeMySQL($conn, $pw);
     $stmt = $conn->prepare('SELECT * FROM user WHERE username = ?');
     $stmt->bind_param('s', $un);
     $stmt->execute();
@@ -78,6 +83,9 @@ function authentication($conn, $un, $pw)
  */
 function storeUserRecord($conn, $username, $input, $cipher)
 {
+    $username = sanitizeMySQL($conn, $username);
+    $input = sanitizeMySQL($conn, $input);
+    $cipher = sanitizeMySQL($conn, $cipher);
     $stmt = $conn->prepare('INSERT INTO history VALUES (NULL, ?, ?, ? , NOW())');
     $stmt->bind_param('sss', $username, $input, $cipher);
     $stmt->execute();
