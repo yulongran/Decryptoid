@@ -6,7 +6,8 @@ require_once 'cipher.php';
 require_once 'session.php';
 
 $translate = "";
-$loggedin = "inline";
+$displayLoggedin = "";
+$displayLoggedOut = "display:none";
 $conn = new mysqli($hn, $un, $pw, $db);
 if ($conn->connect_error) {
     die(sqlError());
@@ -14,29 +15,33 @@ if ($conn->connect_error) {
 
 session_start();
 sessionFixation();
+
 if (isset($_SESSION['username'])) {
-    $loggedin = "none";
-
-    if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
-        $input = "";
-        if (!empty($_POST["input"])) {
-            $input = sanitizeMySQL($conn, $_POST["input"]);
-        } else {
-            $input = file_get_contents(sanitizeMySQL($conn, $_FILES["fileInput"]["tmp_name"]));
-
-        }
-        $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
-        $cipher = sanitizeMySQL($conn, $_POST["cipher-selection"]);
-        if ($cipher === "simple-substitution") {
-            $translate =  $selection === 'encrypt' ? simpleSubstitutionEncryption($input) : simpleSubstitutionDecryption($input);
-        } elseif ($cipher === "double-transposition") {
-            $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
-        } elseif ($cipher === "rc4") {
-            $translate =  $selection === 'encrypt' ? utf8_encode(rc4EncryptionDecryption($input)) : utf8_decode(rc4EncryptionDecryption($input));
-        }
-        storeUserRecord($conn, sanitizeMySQL($conn, $_SESSION["username"]), $input, $cipher);
-        $conn->close();
+    $displayLoggedin = "display: none";
+    $displayLoggedOut = "";
+}
+if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
+    $input = "";
+    if (!empty($_POST["input"])) {
+        $input = sanitizeMySQL($conn, $_POST["input"]);
+    } else {
+        $input = file_get_contents(sanitizeMySQL($conn, $_FILES["fileInput"]["tmp_name"]));
     }
+    $selection = sanitizeMySQL($conn, $_POST["function-selection"]);
+    $cipher = sanitizeMySQL($conn, $_sPOST["cipher-selection"]);
+    if ($cipher === "simple-substitution") {
+        $translate =  $selection === 'encrypt' ? simpleSubstitutionEncryption($input) : simpleSubstitutionDecryption($input);
+    } elseif ($cipher === "double-transposition") {
+        $translate =  $selection === 'encrypt' ? doubleTranspositionEncryption($input) : doubleTranspositionDecryption($input);
+    } elseif ($cipher === "rc4") {
+        $translate =  $selection === 'encrypt' ? utf8_encode(rc4EncryptionDecryption($input)) : utf8_decode(rc4EncryptionDecryption($input));
+    }
+    // User Logged in
+    if (isset($_SESSION['username'])) {
+        storeUserRecord($conn, sanitizeMySQL($conn, $_SESSION["username"]), $input, $cipher);
+    }
+    $conn->close();
+}
     echo
       <<<_END
       <!DOCTYPE html>
@@ -60,8 +65,11 @@ if (isset($_SESSION['username'])) {
                   <li class="nav-item">
                     <a class="nav-link" href="/history.php">History</a>
                   </li>
-                  <li style="display:{$loggedin}" class="nav-item">
+                  <li style="{$displayLoggedin}" class="nav-item">
                     <a class="nav-link" href="/authentication.php">Log in</a>
+                  </li>
+                  <li style="{$displayLoggedOut}" class="nav-item">
+                    <a class="nav-link" href="/logout.php">Log out</a>
                   </li>
                 </ul>
               </div>
@@ -110,4 +118,3 @@ if (isset($_SESSION['username'])) {
         </body>
       </html>
   _END;
-}
