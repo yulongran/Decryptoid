@@ -1,9 +1,9 @@
 <?php
 
-require_once 'login.php';
-require_once 'utility.php';
-require_once 'cipher.php';
-require_once 'session.php';
+require_once '../helpers/login.php';
+require_once '../helpers/utility.php';
+require_once '../helpers/cipher.php';
+require_once '../helpers/session.php';
 
 $translate = "";
 $displayLoggedin = "";
@@ -54,7 +54,7 @@ if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
         <head>
           <meta charset="utf-8" />
           <title>Decryption</title>
-          <link rel="stylesheet" href="./main.css" />
+          <link rel="stylesheet" href="/css/index.css" />
         </head>
         <body>
           <div class="main-container">
@@ -82,7 +82,7 @@ if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
             <form
               class="register-form"
               method="post"
-              action="main.php"
+              action="../public/index.php"
               enctype="multipart/form-data"
             >
               <div class="card-container">
