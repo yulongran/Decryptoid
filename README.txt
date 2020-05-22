@@ -1,23 +1,20 @@
- - All server file compressed in final.zip
+## Decryptoid
+### A web application that allows users to encrypt and decrypt texts in input or text file. The user can select from a list of ciphers and specify if it needs encryption or decryption.
 
 
- - Application consists	of 4 main pages : registration.php, authentication.php, main.php, 					     history.php
+### About
+The application consists of four web pages:
 
- - DecryptoidTable.sql contains the database schema for this application
+- User authentication (login) page  (disabled/view only)
+- User registeration  (sign up) page (disabled/view only)
+- Main cipher page
+- History page (disabled)
 
- - main.php allows users encrypt and decrypt texts in input based on their selection of cipher and option.
- 
- - history.php presents a table which presents the input texts from that user (if logged in), the cipher used and the timestamp at the moment of the creation of the record.
+All information related to the user accounts (username, password and email) are stored in MYSQL database in the most secure way.
+All credential information stored in the Database are salted and hashed.
 
- - registration.php register a user
- 
- - authentication.php authenticate a user with session
-
- - cipher.php contains functions to encrypt and decrypt for all cipher algorithms
- 
- - Utility.php contains functions such as authentication and registration, sanitizing 	   functions, input validation, salt generation and password hashing.
-
- - login.php uses for stores mysql database variable
- 
- - logout.php a simple page for redirect user after they logged out 
- 
+The application prevents regular attack such as:
+      - SQL injection
+      - Session hijacking
+      - Packet Sniffing
+      - Session Fixation.
