@@ -54,71 +54,94 @@ if (isset($_POST["input"]) || isset($_FILES['fileInput'])) {
         <head>
           <meta charset="utf-8" />
           <title>Decryption</title>
-          <link rel="stylesheet" href="/css/index.css" />
+          <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+            integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+            crossorigin="anonymous"
+          />
+          <link rel="stylesheet" href="../css/index.css" />
         </head>
         <body>
-          <div class="main-container">
-            <div class="nav-container">
-              <div class="name">
-                <a class="nav-link" href="/main.php">Decryptoid</a>
-              </div>
-              <div class="navs">
-                <ul class="nav justify-content-center">
-                  <li class="nav-item">
-                    <a class="nav-link" href="/main.php">Cipher Tool</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/history.php">History</a>
-                  </li>
-                  <li style="{$displayLoggedin}" class="nav-item">
-                    <a class="nav-link" href="/authentication.php">Log in</a>
-                  </li>
-                  <li style="{$displayLoggedOut}" class="nav-item">
-                    <a class="nav-link" href="/logout.php">Log out</a>
-                  </li>
-                </ul>
+          <div class="d-flex flex-column min-vh-100">
+            <nav class="navbar px-5">
+              <a class="navbar-brand" href="index.php">Decryptoid</a>
+              <ul class="nav">
+                <li class="nav-item">
+                  <a class="nav-link active" href="index.php">Cipher</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="history.php">History</a>
+                </li>
+                <li class="nav-item" style="{$displayLoggedin}">
+                  <a class="nav-link" href="authentication.php">Log in</a>
+                </li>
+                <li class="nav-item" style="{$displayLoggedOut}">
+                  <a class="nav-link" href="logout.php" tabindex="-1" aria-disabled="true"
+                    >Log out</a
+                  >
+                </li>
+              </ul>
+            </nav>
+            <div class="card flex-grow-1 align-self-center">
+              <div class="card-body">
+                <p class="h1 mb-4">Cipher Tool</p>
+                <form
+                  class="form d-flex flex-column justify-content-center"
+                  method="post"
+                  action="../public/index.php"
+                  enctype="multipart/form-data"
+                >
+                  <div class="form-group">
+                    <textarea
+                      class="form-control"
+                      placeholder="Enter your text"
+                      name="input"
+                    ></textarea>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="custom-file">
+                      <input
+                        type="file"
+                        class="custom-file-input"
+                        name="fileInput"
+                        id="inputGroupFile01"
+                        aria-describedby="inputGroupFileAddon01"
+                      />
+                      <label class="custom-file-label" for="inputGroupFile01"
+                        >Choose a text file</label
+                      >
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 col-form-label"
+                      >Choose to encrypt or decrypt</label
+                    >
+                    <select class="form-control col-sm-5" name="function-selection">
+                      <option value="encrypt">Encrypt</option>
+                      <option value="decrypt">Decrypt</option>
+                    </select>
+                  </div>
+                  <div class="form-group row ">
+                    <label class="col-sm-3 col-form-label"
+                      >Choose cipher algorithm</label
+                    >
+                    <select class="form-control col-sm-5" name="cipher-selection">
+                      <option value="simple-substitution">Simple Substitution</option>
+                      <option value="double-transposition"
+                        >Double Transposition</option
+                      >
+                      <option value="rc4">RC4</option>
+                    </select>
+                  </div>
+                  <div class="transformed-text">
+                    <h3>Transformed text</h3>
+                    <p>{$translate}</p>
+                  </div>
+                  <button type="submit" class="login-btn">CALCULATE</button>
+                </form>
               </div>
             </div>
-            <form
-              class="register-form"
-              method="post"
-              action="../public/index.php"
-              enctype="multipart/form-data"
-            >
-              <div class="card-container">
-                <h1>Cipher Text Tool</h1>
-                <textarea
-                  cols="30"
-                  rows="5"
-                  placeholder="Enter your text"
-                  name="input"
-                ></textarea>
-                <div class="encrypt-decrypt-seletion">
-                  <label>Enter your text or upload a text file:</label>
-                  <input type="file" name="fileInput" id="fileToUpload">
-                </div>
-                <div class="encrypt-decrypt-seletion">
-                  <label>Choose to decrypt or encrypt your text:</label>
-                  <select name="function-selection">
-                    <option value="encrypt">Encrypt</option>
-                    <option value="decrypt">Decrypt</option>
-                  </select>
-                </div>
-                <div class="encrypt-decrypt-seletion">
-                  <label>Choose cipher:</label>
-                  <select name="cipher-selection">
-                    <option value="simple-substitution">Simple Substitution</option>
-                    <option value="double-transposition">Double Transposition</option>
-                    <option value="rc4">RC4</option>
-                  </select>
-                </div>
-                <div class="result-text">
-                  <h3>Transformed text</h3>
-                  <p>{$translate}</p>
-                </div>
-                <button type="submit" class="login-btn">CALCULATE</button>
-              </div>
-            </form>
           </div>
         </body>
       </html>

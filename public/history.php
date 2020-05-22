@@ -1,8 +1,8 @@
 <?php
 
-require_once 'login.php';
-require_once 'utility.php';
-require_once 'session.php';
+require_once '../helpers/login.php';
+require_once '../helpers/utility.php';
+require_once '../helpers/session.php';
 
 $conn = new mysqli($hn, $un, $pw, $db);
 if ($conn->connect_error) {

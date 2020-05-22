@@ -1,7 +1,7 @@
 <?php
 
-require_once 'login.php';
-require_once 'utility.php';
+require_once '../helpers/login.php';
+require_once '../helpers/utility.php';
 
 $conn = new mysqli($hn, $un, $pw, $db);
 if ($conn->connect_error) {
@@ -29,7 +29,7 @@ echo
     <head>
       <meta charset="utf-8" />
       <title>Decryption</title>
-      <link rel="stylesheet" href="./registeration.css" />
+      <link rel="stylesheet" href="../css/registeration.css" />
     </head>
     <body>
       <div class="container">
